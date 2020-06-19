@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Floating point summarizing table</title>
+
+</head>
+<body>
+<H4>Checking the sum of floating point variables</H4>
+
+<table>
+	<tr>	
+		<td>
+			<label for="ny">Rows:</label><br>
+			<input type="number" id="ny" value="10"><br>
+
+			<label for="nx">Columns:</label><br>
+			<input type="number" id="nx" value="5"><br>
+		</td>
+		
+		<td>
+			<label for="xStart">axel x Start:</label><br>
+			<input type="text" id="xStart" value="0.1"><br>
+
+			<label for="yStart">axel y Start:</label><br>
+			<input type="text" id="yStart" value="0.1"><br>
+		</td>
+
+		<td>
+			<label for="xInc">axel x Increment:</label><br>
+			<input type="text" id="xInc" value="0.1"><br>
+
+			<label for="yInc">axel y Increment:</label><br>
+			<input type="text" id="yInc" value="0.1"><br>
+		</td>
+
+
+		<td valign="bottom" >
+			<button onclick="presetInteger()">Preset Integer</button><br>
+			<button onclick="presetFloating()">Preset Floating</button>
+		</td>
+
+
+		<td valign="bottom" >
+			<button onclick="/*alert('starting'); for (j=1; j<=3; j++) {alert(j)};*/ writeOutput()">Draw Table</button>
+		</td>
+
+
+	</tr>
+
+</table>
+
+
+<p id="outputArea">old value</p>
+
+	
+<H4>Comparison</H4>
+
+<table>
+	<tr>	
+		<td>
+			<label for="x">x:</label><br>
+			<input type="text" id="x" value="0.1"><br>
+
+			<label for="y">y:</label><br>
+			<input type="text" id="y" value="0.2"><br>
+		</td>
+		<td valign="bottom" >
+			<button onclick="calculate()">Calculate</button>
+		</td>
+		<td>
+			<label for="sumShouldBe">Sum should be:</label><br>
+			<input type="text" id="sumShouldBe" value="value not set"><br>
+		</td>
+
+		<td>
+			<label for="sumRaw">Real sum:</label><br>
+			<input type="text" id="sumRaw" value="value not set"><br>
+		</td>
+
+		<td>
+			<label for="straightComparison">Straight comparison:</label><br>
+			<input type="text" id="straightComparison" value="value not set"><br>
+		</td>
+
+		<td>
+			<label for="functionComparison">Custom function comparison:</label><br>
+			<input type="text" id="functionComparison" value="value not set"><br>
+		</td>
+
+	</tr>
+
+</table>
+
+
+
+
+
+<script type="text/javascript">
+
+	var previousCell;
+
+	function generateTable() {
+
+		let nx=document.getElementById("nx").value;
+		let ny=document.getElementById("ny").value;
+		let xStart=parseFloat(document.getElementById("xStart").value);
+		let yStart=parseFloat(document.getElementById("yStart").value);
+
+		let xInc=parseFloat(document.getElementById("xInc").value);
+		let yInc=parseFloat(document.getElementById("yInc").value);
+		let x, y, result;
+
+		let xEnd=xStart + xInc*(nx-1);
+		let yEnd=yStart+yInc*(ny-1);
+
+		let tableHTML="";
+
+		tableHTML+='<table border="1">';
+		for (y=yStart; y<=yEnd; y=y+yInc) {
+			tableHTML+="<tr>";
+
+			for (x=xStart; x<=xEnd; x=x+xInc) {
+
+				x=cutFloat(x);
+				y=cutFloat(y);
+
+				//form cell onclick function and attributes x, y with values
+
+				tableHTML+='<td onclick="onCellClick(this);"';
+				tableHTML+=' x="';  
+				tableHTML+=x;
+				tableHTML+='"';
+
+				tableHTML+=' y="';  
+				tableHTML+=y;
+				tableHTML+='"'; 
+
+				tableHTML+='>';
+
+
+				//form cell visible text 'x + y = [result]'
+				tableHTML+=x;
+				tableHTML+="+";
+				tableHTML+=y;
+				tableHTML+="=";
+				result=x+y;
+				tableHTML+=result;
+
+				tableHTML+="</td>";
+			}
+			tableHTML+="</tr>";
+		}
+		tableHTML+="</table>";
+		return tableHTML;
+	}
+
+	function cutFloat(floatingPointVar) {
+		let numDigitsToKeep=8;
+		let multiplier=Math.pow(10, numDigitsToKeep);
+		floatingPointVar=Math.round(floatingPointVar*multiplier)/multiplier;
+
+		return floatingPointVar;
+	}
+
+
+	function presetInteger() {
+		document.getElementById("xStart").value = "0";
+		document.getElementById("yStart").value = "0";
+		document.getElementById("xInc").value = "1";
+		document.getElementById("yInc").value = "1";
+	}
+
+	function presetFloating() {
+		document.getElementById("xStart").value = "0.1";
+		document.getElementById("yStart").value = "0.1";
+		document.getElementById("xInc").value = "0.1";
+		document.getElementById("yInc").value = "0.1";
+	}
+
+
+
+
+	function onCellClick(currentCell) {
+		//alert("Works! " + currentCell.innerHTML);
+		//alert("x= " + currentCell.getAttribute("x"));
+		//alert("y= " + currentCell.getAttribute("y"));
+
+		document.getElementById("x").value = currentCell.getAttribute("x");
+		document.getElementById("y").value = currentCell.getAttribute("y");
+
+		currentCell.style.backgroundColor = '#ffff6b';
+
+		if (previousCell!=null) {
+			previousCell.style.backgroundColor = '#dee0ff';
+		}
+		previousCell=currentCell;
+	}
+
+
+
+	function writeOutput() {
+		let msg="";
+		
+		//msg+="<h1>";
+		//msg+="updated";
+		//msg+="</h1>";
+
+		msg=generateTable();
+
+		//document.write(msg);
+		document.getElementById("outputArea").innerHTML = msg;
+	}
+
+
+	function calculate() {
+		let x=parseFloat(document.getElementById("x").value);
+		let y=parseFloat(document.getElementById("y").value);
+
+		let sumRaw=x+y;
+		document.getElementById("sumRaw").value = sumRaw;
+
+		let sumShouldBe=cutFloat(sumRaw);
+		document.getElementById("sumShouldBe").value = sumShouldBe;
+
+		let colorTrue='#6df276';
+		let colorFalse='#ff7b3d';
+
+		document.getElementById("straightComparison").value = sumRaw==sumShouldBe;
+		if (sumRaw==sumShouldBe) {
+			document.getElementById("straightComparison").style.backgroundColor = colorTrue;
+		}
+		else {
+			document.getElementById("straightComparison").style.backgroundColor = colorFalse;
+		}
+
+		document.getElementById("functionComparison").value = floatsEqual(sumRaw, sumShouldBe);
+		if (floatsEqual(sumRaw, sumShouldBe)) {
+			document.getElementById("functionComparison").style.backgroundColor = colorTrue;
+		}
+		else {
+			document.getElementById("functionComparison").style.backgroundColor = colorFalse;
+		}
+
+	}
+
+	function floatsEqual(a, b) {
+		//Do not do if (x == y) { ... }
+		//Instead do if (abs(x - y) < myToleranceValue) { ... }.
+		let myToleranceValue = Math.pow(10, -10);
+		if (Math.abs(a - b) < myToleranceValue) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+
+	writeOutput();
+
+
+</script>
+
+
+</body>
+</html>
