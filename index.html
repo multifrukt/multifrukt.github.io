@@ -1,0 +1,29 @@
+<html>
+	<head></head>
+	<body>
+
+		<form>
+			<button type="button" class="primary" style="">
+				<i class="play"></i>
+				Run Application
+			</button>
+
+			<button type="button" class="primary" style="">
+				<i class="pause"></i>
+				Suspend Application
+			</button>
+
+			<button type="button" class="primary" style="">
+				<i class="stop"></i>
+				Terminate Application
+			</button>
+		</form>
+
+
+		<div>
+
+			Exit
+		</div>
+	</body>
+
+</html>
